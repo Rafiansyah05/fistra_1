@@ -1,3 +1,4 @@
+import 'package:fistra_1/home/presentation/screens/aktifitas/aktifitas.dart';
 import 'package:fistra_1/home/presentation/screens/profil/profil.dart';
 import 'package:flutter/material.dart';
 import 'package:fistra_1/home/presentation/screens/widget/feature_button.dart';
@@ -161,8 +162,14 @@ class HomeScreen extends StatelessWidget {
                       FeatureButton(
                         icon: Icons.edit_note_outlined,
                         label: 'Aktifitas',
-                        onTap: () => Navigator.pushNamed(context, '/aktifitas'),
-                        iconColor: primaryBlue,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ActivityScreen(),
+                            ), // Panggil NotificationScreen()
+                          );
+                        },
                       ),
                       FeatureButton(
                         icon: Icons.support_agent_outlined,
