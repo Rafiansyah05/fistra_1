@@ -66,34 +66,6 @@ class _ActivityScreenState extends State<ActivityScreen> {
       paymentStatusMessage: 'Pembayaran berhasil',
       iconBackgroundColor: Colors.blue.shade300,
     ),
-    Transaction(
-      id: '1256949729',
-      description: 'Transfer ke Budi',
-      date: DateTime(2026, 3, 20, 11, 5, 0),
-      amount: -50000,
-      status: 'Berhasil',
-      iconData: Icons.send,
-      iconBackgroundColor: Colors.orange.shade300,
-      recipientName: 'Budi Santoso',
-      sourceOfFundsName: 'Rekening Gaji',
-      sourceOfFundsAccount: '987-654-3210',
-      transactionFee: 500,
-      paymentStatusMessage: 'Transfer berhasil',
-    ),
-    Transaction(
-      id: '1256949730',
-      description: 'Top Up Saldo',
-      date: DateTime(2026, 3, 15, 17, 20, 0),
-      amount: 100000,
-      status: 'Berhasil',
-      iconData: Icons.account_balance_wallet,
-      iconBackgroundColor: Colors.green.shade300,
-      statusColor: Colors.blue,
-      recipientName: 'Akun Saya', // Atau bisa juga nama akunnya
-      paymentStatusMessage: 'Top Up berhasil',
-      transactionFee: 0,
-      // sourceOfFunds bisa null jika tidak relevan untuk top up dari sumber eksternal
-    ),
   ];
 
   Map<String, List<Transaction>> _groupedTransactions = {};

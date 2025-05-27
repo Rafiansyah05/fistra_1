@@ -1,6 +1,7 @@
 // lib/transaction_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+// Pastikan path import ini sesuai dengan struktur folder Anda
 import 'package:fistra_1/home/presentation/screens/aktifitas/transaction_model.dart';
 
 class TransactionDetailScreen extends StatelessWidget {
@@ -51,7 +52,7 @@ class TransactionDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             // Logo FISTRA
             Image.asset(
-              'assets/images/fistra_logo.png', // Pastikan path ini benar
+              'assets/images/fistra_logo.png', // Pastikan path ini benar dan gambar ada di pubspec.yaml
               height: 40, // Sesuaikan ukuran
               errorBuilder: (context, error, stackTrace) {
                 // Fallback jika gambar tidak ditemukan
@@ -136,10 +137,16 @@ class TransactionDetailScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 30), // Spasi sebelum tombol
+            // Pindahkan _buildActionButtons ke sini
+            _buildActionButtons(context),
+            const SizedBox(
+              height: 20,
+            ), // Tambahkan sedikit padding di bawah tombol jika diperlukan
           ],
         ),
       ),
-      bottomNavigationBar: _buildActionButtons(context),
+      // Hapus bottomNavigationBar dari sini
+      // bottomNavigationBar: _buildActionButtons(context),
     );
   }
 
@@ -197,20 +204,24 @@ class TransactionDetailScreen extends StatelessWidget {
     );
   }
 
+  // _buildActionButtons sekarang tidak lagi memiliki shadow atas yang khas untuk bottomNavigationBar
+  // Kita bisa membiarkannya apa adanya atau menghilangkan shadow jika dirasa tidak perlu lagi
   Widget _buildActionButtons(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, -2), // changes position of shadow
-          ),
-        ],
-      ),
+      // Padding atas bisa dihilangkan atau disesuaikan jika sudah ada SizedBox di atasnya
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+      // Jika tidak ingin ada background atau shadow khusus di sini, bisa dihilangkan
+      // decoration: BoxDecoration(
+      //   color: Colors.white,
+      //   boxShadow: [
+      //     BoxShadow(
+      //       color: Colors.grey.withOpacity(0.2),
+      //       spreadRadius: 1,
+      //       blurRadius: 5,
+      //       offset: const Offset(0, -2), // changes position of shadow
+      //     ),
+      //   ],
+      // ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
