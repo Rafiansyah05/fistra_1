@@ -52,7 +52,7 @@ class TransactionDetailScreen extends StatelessWidget {
             const SizedBox(height: 20),
             // Logo FISTRA
             Image.asset(
-              'assets/images/fistra_logo.png', // Pastikan path ini benar dan gambar ada di pubspec.yaml
+              'assets/logo_fistra.png', // Pastikan path ini benar dan gambar ada di pubspec.yaml
               height: 40, // Sesuaikan ukuran
               errorBuilder: (context, error, stackTrace) {
                 // Fallback jika gambar tidak ditemukan
