@@ -1,92 +1,72 @@
 // lib/widgets/info_dialog.dart (Nama file bisa disesuaikan)
 import 'package:flutter/material.dart';
 
-// Nama fungsi bisa tetap atau diubah.
 Future<void> showAppInfoDialog({
   required BuildContext context,
-  required VoidCallback
-  onMengerti, // Fungsi yang akan dipanggil saat "Mengerti" ditekan
+  required VoidCallback onMengerti,
 }) async {
   return showDialog<void>(
     context: context,
-    barrierDismissible: true, // Agar bisa ditutup dengan tap di luar dialog
+    barrierDismissible: true,
     builder: (BuildContext dialogContext) {
-      // Context khusus untuk dialog ini
       return AlertDialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0), // Rounded corners
+          borderRadius: BorderRadius.circular(20.0),
         ),
         backgroundColor: Colors.white,
-        contentPadding: const EdgeInsets.fromLTRB(
-          24.0,
-          24.0,
-          24.0,
-          0,
-        ), // Padding konten
+        contentPadding: const EdgeInsets.fromLTRB(24.0, 24.0, 24.0, 0),
         content: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center, // Pusatkan ikon
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              // Ikon Informasi
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: const BoxDecoration(
-                  color: Color(0xFFFFEB3B), // Warna kuning
+                  color: Color(0xFFFFEB3B),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
-                  Icons.info_outline_rounded, // Ikon info
+                  Icons.info_outline_rounded,
                   color: Colors.white,
                   size: 40.0,
                 ),
               ),
               const SizedBox(height: 24.0),
 
-              // Daftar Informasi
-              _buildInfoItem(
-                dialogContext, // Gunakan dialogContext untuk DefaultTextStyle
+              // Menggunakan helper widget yang dimodifikasi
+              _buildInfoTextItem(
+                // Menggunakan helper baru atau yang dimodifikasi
                 index: '1.',
-                textSpans: [
-                  const TextSpan(
-                    text:
-                        'Demi kenyamanan bersama kami berharap pengguna setia FISTRA tetap menggunakan bahasa yang sopan dan tidak mengandung SARA.',
-                  ),
-                ],
+                text:
+                    'Demi kenyamanan bersama kami berharap pengguna setia FISTRA tetap menggunakan bahasa yang sopan dan tidak mengandung SARA.',
               ),
               const SizedBox(height: 12.0),
-              _buildInfoItem(
-                dialogContext,
+              _buildInfoTextItem(
                 index: '2.',
-                textSpans: [
-                  const TextSpan(
-                    text:
-                        'Admin hanya akan menjawab pada saat jam kerja mulai dari hari senin-sabtu pada pukul 08:00 WIB - 16:30 WIB, lebih dari itu Kami akan menjawabnya di hari berikutnya.',
-                  ),
-                ],
+                text:
+                    'Admin hanya akan menjawab pada saat jam kerja mulai dari hari senin-sabtu pada pukul 08:00 WIB - 16:30 WIB, lebih dari itu Kami akan menjawabnya di hari berikutnya.',
               ),
               const SizedBox(height: 12.0),
-              _buildInfoItem(
-                dialogContext,
+              // Untuk item ke-3, kita tetap menggunakan RichText karena ada format bold pada nomor telepon
+              _buildInfoRichTextItem(
+                // Helper khusus untuk RichText
+                context: dialogContext, // Perlu context untuk DefaultTextStyle
                 index: '3.',
                 textSpans: [
                   const TextSpan(
                     text:
                         'Jika pesan anda tidak dibalas dalam waktu lebih dari 4 hari, silahkan hubungi melalui panggilan suara kepada nomor ini ',
+                    style: TextStyle(fontWeight: FontWeight.normal),
                   ),
                   const TextSpan(
-                    // Nomor telepon sekarang hanya teks tebal
                     text: '+6281243202344',
-                    style: TextStyle(
-                      // color: Colors.blue, // Warna bisa dihilangkan atau disesuaikan
-                      fontWeight: FontWeight.bold, // Hanya tebal
-                      // decoration: TextDecoration.underline, // Underline dihilangkan
-                    ),
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const TextSpan(text: ' (ADMIN PUSAT)'),
                 ],
               ),
-              const SizedBox(height: 24.0), // Spasi sebelum tombol
+              const SizedBox(height: 24.0),
             ],
           ),
         ),
@@ -97,7 +77,7 @@ Future<void> showAppInfoDialog({
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF42A5F5), // Warna biru
+                backgroundColor: const Color(0xFF42A5F5),
                 padding: const EdgeInsets.symmetric(vertical: 14.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
@@ -105,8 +85,8 @@ Future<void> showAppInfoDialog({
                 elevation: 2,
               ),
               onPressed: () {
-                Navigator.of(dialogContext).pop(); // Tutup dialog
-                onMengerti(); // Panggil callback
+                Navigator.of(dialogContext).pop();
+                onMengerti();
               },
               child: const Text(
                 'Mengerti',
@@ -124,9 +104,38 @@ Future<void> showAppInfoDialog({
   );
 }
 
-// Helper widget _buildInfoItem
-Widget _buildInfoItem(
-  BuildContext context, {
+// Helper widget untuk item info dengan teks biasa
+Widget _buildInfoTextItem({required String index, required String text}) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        index,
+        style: const TextStyle(
+          fontSize: 14.0,
+          color: Colors.black87,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+      const SizedBox(width: 8.0),
+      Expanded(
+        child: Text(
+          text,
+          textAlign: TextAlign.start,
+          style: TextStyle(
+            fontSize: 14.0,
+            color: Colors.black.withOpacity(0.75),
+            height: 1.4,
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
+// Helper widget untuk item info dengan RichText (untuk poin ke-3)
+Widget _buildInfoRichTextItem({
+  required BuildContext context,
   required String index,
   required List<TextSpan> textSpans,
 }) {

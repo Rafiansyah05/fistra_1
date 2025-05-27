@@ -1,5 +1,6 @@
 // lib/complaint_screen.dart
-import 'package:fistra_1/1_registration/presentation/screens/allertToFingger.dart';
+
+import 'package:fistra_1/home/presentation/screens/komplain%20dan%20masukkan/allertKomplain.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'complaint_message_model.dart';
@@ -76,17 +77,11 @@ class _ComplaintScreenState extends State<ComplaintScreen> {
 
   // 2. Modifikasi metode untuk menampilkan dialog konfirmasi sidik jari
   void _onInfoButtonPressed() {
-    showFingerprintConfirmationDialog(
+    showAppInfoDialog(
       context: context,
       onMengerti: () {
         // Aksi yang ingin dilakukan setelah pengguna menekan "Mengerti"
         // Misalnya, navigasi ke halaman pemindaian sidik jari atau tindakan lain.
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Pengguna mengerti, lanjutkan proses sidik jari!'),
-          ),
-        );
-        print('Pengguna telah mengerti konfirmasi sidik jari.');
       },
     );
   }

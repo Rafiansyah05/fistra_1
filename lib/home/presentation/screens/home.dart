@@ -1,5 +1,6 @@
 import 'package:fistra_1/home/presentation/screens/aktifitas/aktifitas.dart';
 import 'package:fistra_1/home/presentation/screens/komplain%20dan%20masukkan/komplain.dart';
+import 'package:fistra_1/home/presentation/screens/mitra/mitra.dart';
 import 'package:fistra_1/home/presentation/screens/profil/profil.dart';
 import 'package:flutter/material.dart';
 import 'package:fistra_1/home/presentation/screens/widget/feature_button.dart';
@@ -188,7 +189,14 @@ class HomeScreen extends StatelessWidget {
                       FeatureButton(
                         icon: Icons.store_mall_directory_outlined,
                         label: 'Mitra',
-                        onTap: () => Navigator.pushNamed(context, '/mitra'),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MitraScreen(),
+                            ), // Panggil NotificationScreen()
+                          );
+                        },
                         iconColor: primaryBlue,
                       ),
                     ],
