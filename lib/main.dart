@@ -32,3 +32,38 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// import 'package:fistra_1/1_registration/presentation/screens/nomor_HP.dart';
+// import 'package:fistra_1/home/presentation/screens/home.dart';
+// import 'package:fistra_1/login/forgot_pin_page.dart';
+// import 'package:fistra_1/login/login.dart';
+// import 'package:flutter/material.dart';
+
+// void main() {
+//   runApp(const MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'FISTRA',
+//       debugShowCheckedModeBanner: false,
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//         fontFamily:
+//             'Poppins', // Opsional: gunakan font yang lebih bagus seperti Poppins
+//       ),
+//       // Mendefinisikan rute/halaman aplikasi
+//       initialRoute: '/login', // Halaman awal adalah login
+//       routes: {
+//         '/login': (context) => const LoginPage(),
+//         '/register': (context) => const NomorHpScreen(),
+//         '/forgot-pin': (context) => const ForgotPinPage(),
+//         '/home': (context) => const HomeScreen(),
+//       },
+//     );
+//   }
+// }

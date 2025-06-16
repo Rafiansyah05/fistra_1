@@ -1,23 +1,10 @@
 // lib/screens/profile_screen.dart
+import 'package:fistra_1/login/login.dart';
 import 'package:flutter/material.dart';
 import 'package:fistra_1/home/presentation/screens/profil/placeholder.dart'; // Impor placeholder screen
-// Impor halaman awal Anda (ganti dengan path yang benar)
-// import 'package:nama_proyek_anda/screens/home_screen.dart'; // Contoh
 
-// Placeholder untuk halaman awal jika Anda belum memilikinya
-// Anda harus mengganti ini dengan navigasi ke halaman awal aplikasi Anda yang sebenarnya
-class InitialScreenPlaceholder extends StatelessWidget {
-  const InitialScreenPlaceholder({super.key});
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Halaman Awal")),
-      body: const Center(
-        child: Text("Anda telah keluar dan kembali ke halaman awal."),
-      ),
-    );
-  }
-}
+// PERBAIKAN 1: Impor halaman login Anda
+// Ganti 'fistra_1' dengan nama proyek Anda jika berbeda
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -31,20 +18,23 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  // PERBAIKAN 2: Arahkan fungsi logout ke LoginPage
   void _logout(BuildContext context) {
-    // Navigasi ke halaman awal dan hapus semua rute sebelumnya
+    // Navigasi ke halaman login dan hapus semua rute sebelumnya.
+    // Ini adalah cara yang benar untuk proses logout.
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => const InitialScreenPlaceholder(),
-      ), // GANTI DENGAN HALAMAN AWAL ANDA
-      (Route<dynamic> route) => false, // Predikat untuk menghapus semua rute
+        builder: (context) => const LoginPage(), // Mengarah ke halaman login
+      ),
+      (Route<dynamic> route) =>
+          false, // Predikat ini menghapus semua rute sebelumnya
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final Color primaryColor = Colors.blue.shade500; // Warna biru dari gambar
+    final Color primaryColor = Colors.blue.shade500;
     final Color iconColor = Colors.blue.shade600;
 
     return Scaffold(
@@ -81,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(4), // Sedikit border putih
+                    padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.white.withOpacity(0.9),
@@ -147,18 +137,23 @@ class ProfileScreen extends StatelessWidget {
             const Divider(height: 1, thickness: 0.5, indent: 20, endIndent: 20),
             _buildProfileMenuItem(
               context,
-              icon: Icons.link_outlined, // Mirip dengan ikon di gambar
+              icon: Icons.link_outlined,
               iconColor: iconColor,
               title: 'Bantu Teman Daftar',
               subtitle:
                   'Teman Anda bisa mendaftar sidik jari menggunakan perangkat Anda. Data tetap milik mereka, Anda hanya membantu prosesnya.',
               onTap: () => _navigateTo(context, 'Bantu Teman Daftar'),
             ),
-            const SizedBox(height: 30), // Jarak sebelum tombol keluar
-            // Tombol Keluar
+            const SizedBox(height: 30),
+
+            // PERBAIKAN 3: Struktur Tombol Keluar diperbaiki
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 20.0),
               child: TextButton.icon(
+                // Panggil fungsi _logout saat tombol ditekan
+                onPressed: () {
+                  _logout(context);
+                },
                 icon: const Icon(Icons.logout, color: Colors.red),
                 label: const Text(
                   'Keluar',
@@ -168,13 +163,11 @@ class ProfileScreen extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                onPressed: () => _logout(context),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20,
                     vertical: 12,
                   ),
-                  // Bisa tambahkan shape jika ingin ada border atau background
                 ),
               ),
             ),
@@ -226,8 +219,6 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
             ),
-            // Icon panah kanan (opsional, tidak ada di desain asli)
-            // Icon(Icons.chevron_right, color: Colors.grey.shade400),
           ],
         ),
       ),
