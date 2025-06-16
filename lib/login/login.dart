@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 const Color primaryColor = Color(0xFF3B97F7);
 const Color textFieldBackgroundColor = Color(0xFFF2F2F7);
 
-// 1. Ubah menjadi StatefulWidget
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
