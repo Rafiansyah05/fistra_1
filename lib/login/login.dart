@@ -1,3 +1,6 @@
+import 'package:fistra_1/1_registration/presentation/screens/nomor_HP.dart';
+import 'package:fistra_1/home/presentation/screens/home.dart';
+import 'package:fistra_1/login/forgot_pin_page.dart';
 import 'package:flutter/material.dart';
 
 // Definisikan warna-warna utama agar mudah diubah dan konsisten
@@ -16,7 +19,6 @@ class _LoginPageState extends State<LoginPage> {
   final _phoneController = TextEditingController();
   final _pinController = TextEditingController();
 
-  // Jangan lupa dispose controller untuk mencegah memory leak
   @override
   void dispose() {
     _phoneController.dispose();
@@ -25,13 +27,17 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() {
-    // 3. Tambahkan fungsi untuk validasi
-    // Metode validate() akan menjalankan fungsi validator di setiap TextFormField
+    // Validasi form sebelum melanjutkan
     if (_formKey.currentState!.validate()) {
       // Jika semua input valid, lanjutkan ke halaman home
-      // Di sini Anda bisa menambahkan logika API call
       print('Login berhasil dengan nomor: ${_phoneController.text}');
-      Navigator.pushReplacementNamed(context, '/home');
+
+      // PERUBAHAN 2: Ganti pushReplacementNamed dengan pushReplacement
+      // pushReplacement digunakan agar pengguna tidak bisa kembali ke halaman login
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      );
     }
   }
 
@@ -40,7 +46,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        // 4. Bungkus Column dengan Widget Form
         child: Form(
           key: _formKey,
           child: Padding(
@@ -61,7 +66,6 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 40),
 
-                // 5. Ganti _buildTextField dengan TextFormField yang sudah ada controller & validator
                 _buildTextFormField(
                   controller: _phoneController,
                   hintText: 'Masukkan Nomor HP Kamu',
@@ -81,7 +85,13 @@ class _LoginPageState extends State<LoginPage> {
                   alignment: Alignment.centerRight,
                   child: GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, '/forgot-pin');
+                      // PERUBAHAN 3: Ganti pushNamed dengan push
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const ForgotPinPage(),
+                        ),
+                      );
                     },
                     child: const Text(
                       'Lupa PIN FISTRA',
@@ -96,13 +106,12 @@ class _LoginPageState extends State<LoginPage> {
 
                 // Tombol Login Utama
                 ElevatedButton(
-                  // Panggil fungsi _login saat tombol ditekan
                   onPressed: _login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(12), // UI Diperbaiki
                     ),
                     elevation: 0,
                   ),
@@ -119,7 +128,13 @@ class _LoginPageState extends State<LoginPage> {
 
                 GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, '/register');
+                    // PERUBAHAN 4: Ganti pushNamed dengan push
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NomorHpScreen(),
+                      ),
+                    );
                   },
                   child: const Text(
                     'Registrasi',
@@ -140,7 +155,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  // 6. Ganti _buildTextField menjadi _buildTextFormField
   Widget _buildTextFormField({
     required TextEditingController controller,
     required String hintText,
@@ -151,12 +165,11 @@ class _LoginPageState extends State<LoginPage> {
       controller: controller,
       obscureText: isObscure,
       keyboardType: keyboardType,
-      // Fungsi validator
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return '$hintText tidak boleh kosong'; // Pesan error
+          return '$hintText tidak boleh kosong';
         }
-        return null; // Return null jika valid
+        return null;
       },
       decoration: InputDecoration(
         hintText: hintText,
@@ -171,7 +184,6 @@ class _LoginPageState extends State<LoginPage> {
           borderRadius: BorderRadius.circular(30),
           borderSide: BorderSide.none,
         ),
-        // Style untuk error, agar lebih rapi
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(30),
           borderSide: const BorderSide(color: Colors.red, width: 1),

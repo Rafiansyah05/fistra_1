@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'package:fistra_1/snap/presentation/screens/awal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fistra_1/1_registration/presentation/screens/nomor_HP.dart'; // Untuk SystemChrome
+// import 'package:fistra_1/1_registration/presentation/screens/nomor_HP.dart'; // Untuk SystemChrome
 // Pastikan path import ini benar sesuai struktur proyek Anda
 
 class SplashScreen extends StatefulWidget {
@@ -31,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(const Duration(seconds: 3), () {
       // Durasi splash screen
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const NomorHpScreen()),
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
       );
     });
   }
