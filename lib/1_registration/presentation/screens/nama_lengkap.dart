@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fistra_1/1_registration/presentation/screens/tanggal_lahir.dart'; // We will create this file next
 
 class NameInputPage extends StatefulWidget {
-  const NameInputPage({super.key});
+  const NameInputPage({super.key, required String phoneNumber});
 
   @override
   State<NameInputPage> createState() => _NameInputPageState();

@@ -28,7 +28,7 @@ class _NomorHpScreenState extends State<NomorHpScreen> {
       Navigator.pushReplacement(
         // Use pushReplacement if you don't want to go back to this page
         context,
-        MaterialPageRoute(builder: (context) => NameInputPage()),
+        MaterialPageRoute(builder: (context) => NameInputPage(phoneNumber: '')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
