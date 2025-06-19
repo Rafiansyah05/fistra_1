@@ -1,9 +1,8 @@
 import 'package:fistra_1/1_registration/presentation/screens/nomor_HP.dart';
-import 'package:fistra_1/home/presentation/screens/home.dart';
-import 'package:fistra_1/login/forgot_pin_page.dart';
+import 'package:fistra_1/auth/auth_services.dart';
+// import 'package:fistra_1/login/forgot_pin_page.dart'; // <-- DIHAPUS, tidak relevan lagi
 import 'package:flutter/material.dart';
 
-// Definisikan warna-warna utama agar mudah diubah dan konsisten
 const Color primaryColor = Color(0xFF3B97F7);
 const Color textFieldBackgroundColor = Color(0xFFF2F2F7);
 
@@ -16,28 +15,66 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _phoneController = TextEditingController();
-  final _pinController = TextEditingController();
+  final AuthService _authService = AuthService(); // Instance dari AuthService
+
+  // -- PERUBAHAN 1: Ganti controller password dengan OTP --
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _otpController =
+      TextEditingController(); // Controller baru untuk OTP
+
+  // -- PERUBAHAN 2: State untuk mengontrol tampilan UI --
+  bool _isOtpScreen = false; // false = layar input HP, true = layar input OTP
+  bool _isLoading = false; // Untuk menampilkan loading indicator
 
   @override
   void dispose() {
     _phoneController.dispose();
-    _pinController.dispose();
+    _otpController.dispose(); // Jangan lupa dispose controller baru
     super.dispose();
   }
 
-  void _login() {
-    // Validasi form sebelum melanjutkan
+  // -- PERUBAHAN 3: Fungsi baru untuk mengirim kode verifikasi --
+  void sendVerificationCode() async {
     if (_formKey.currentState!.validate()) {
-      // Jika semua input valid, lanjutkan ke halaman home
-      print('Login berhasil dengan nomor: ${_phoneController.text}');
+      setState(() => _isLoading = true);
+      final phone = _phoneController.text;
 
-      // PERUBAHAN 2: Ganti pushReplacementNamed dengan pushReplacement
-      // pushReplacement digunakan agar pengguna tidak bisa kembali ke halaman login
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const HomeScreen()),
+      // Panggil method dari AuthService untuk mengirim OTP
+      await _authService.sendOtp(
+        phone: phone, // pastikan formatnya +62...
+        context: context,
+        onCodeSent: () {
+          // Callback ini akan dipanggil jika kode berhasil dikirim
+          setState(() {
+            _isLoading = false;
+            _isOtpScreen = true; // Pindah ke layar input OTP
+          });
+        },
       );
+
+      // Jika ada error, akan ditangani di dalam sendOtp (via SnackBar)
+      // Jadi kita reset loading state di sini jika terjadi error sebelum codeSent dipanggil
+      if (mounted && !_isOtpScreen) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  // -- PERUBAHAN 4: Fungsi baru untuk verifikasi OTP dan login --
+  void verifyAndLogin() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+      try {
+        await _authService.verifyOtp(otp: _otpController.text);
+        // Navigasi akan di-handle oleh AuthGate setelah login berhasil
+      } catch (e) {
+        setState(() => _isLoading = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString().replaceAll('Exception: ', ''))),
+        );
+      }
+      // Tidak perlu set _isLoading = false di sini jika login berhasil,
+      // karena halaman akan berganti.
     }
   }
 
@@ -64,89 +101,83 @@ class _LoginPageState extends State<LoginPage> {
                     color: Colors.black,
                   ),
                 ),
+                const SizedBox(height: 10),
+                Text(
+                  // -- PERUBAHAN 5: Teks deskripsi yang dinamis --
+                  _isOtpScreen
+                      ? 'Masukkan kode OTP yang dikirim ke ${_phoneController.text}'
+                      : 'Masukkan nomor HP untuk login atau registrasi',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.grey),
+                ),
                 const SizedBox(height: 40),
 
-                _buildTextFormField(
-                  controller: _phoneController,
-                  hintText: 'Masukkan Nomor HP Kamu',
-                  keyboardType: TextInputType.phone,
-                ),
-                const SizedBox(height: 20),
+                // -- PERUBAHAN 6: Tampilkan input yang sesuai state --
+                if (!_isOtpScreen)
+                  _buildTextFormField(
+                    controller: _phoneController,
+                    hintText: 'Nomor Handphone (contoh: +62812...)',
+                    keyboardType: TextInputType.phone,
+                  )
+                else
+                  _buildTextFormField(
+                    controller: _otpController,
+                    hintText: 'Masukkan 6 Digit Kode OTP',
+                    keyboardType: TextInputType.number,
+                  ),
 
-                _buildTextFormField(
-                  controller: _pinController,
-                  hintText: 'Masukkan PIN FISTRA Kamu',
-                  isObscure: true,
-                  keyboardType: TextInputType.number,
-                ),
-                const SizedBox(height: 12),
+                // -- PERUBAHAN 7: Hapus "Lupa PIN" karena tidak relevan --
+                const SizedBox(height: 40),
 
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: GestureDetector(
+                // -- PERUBAHAN 8: Tombol yang dinamis --
+                _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ElevatedButton(
+                      onPressed:
+                          _isOtpScreen ? verifyAndLogin : sendVerificationCode,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: Text(
+                        _isOtpScreen ? 'Verifikasi & Login' : 'Kirim Kode',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                const SizedBox(height: 24),
+
+                // -- PERUBAHAN 9: Tombol registrasi bisa disembunyikan/dihapus --
+                // karena alur OTP menangani login dan registrasi sekaligus.
+                // Atau bisa dibiarkan jika alur registrasi Anda berbeda.
+                // Untuk sementara, kita sembunyikan jika sudah di layar OTP.
+                if (!_isOtpScreen)
+                  GestureDetector(
                     onTap: () {
-                      // PERUBAHAN 3: Ganti pushNamed dengan push
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const ForgotPinPage(),
+                          builder: (context) => const NomorHpScreen(),
                         ),
                       );
                     },
                     child: const Text(
-                      'Lupa PIN FISTRA',
+                      'Belum punya akun? Registrasi',
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         color: primaryColor,
-                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                ), //
-
-                const SizedBox(height: 40),
-
-                // Tombol Login Utama
-                ElevatedButton(
-                  onPressed: _login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12), // UI Diperbaiki
-                    ),
-                    elevation: 0,
-                  ),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                GestureDetector(
-                  onTap: () {
-                    // PERUBAHAN 4: Ganti pushNamed dengan push
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const NomorHpScreen(),
-                      ),
-                    );
-                  },
-                  child: const Text(
-                    'Registrasi',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
                 const Spacer(),
               ],
             ),
@@ -156,6 +187,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  // Helper widget tidak perlu diubah, hanya pemanggilannya
   Widget _buildTextFormField({
     required TextEditingController controller,
     required String hintText,
