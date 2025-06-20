@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart'; // 1. Tambahkan import ini
-import 'package:fistra_1/snap/presentation/screens/SplashScreen.dart'; // Import splash screen
+
+//tambahan firebase
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:fistra_1/auth/auth_gate.dart';
 
 void main() async {
   // 2. Jadikan fungsi main menjadi async
@@ -10,6 +14,8 @@ void main() async {
   // 4. Inisialisasi data lokal untuk package intl (misalnya untuk bahasa Indonesia 'id_ID')
   //    Ganti 'id_ID' jika Anda menggunakan locale lain secara primer.
   await initializeDateFormatting('id_ID', null);
+  //tambahan
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   runApp(const MyApp());
 }
@@ -27,7 +33,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white, // Latar belakang default
         fontFamily: 'Poppins', // Contoh jika Anda ingin menggunakan font kustom
       ),
-      home: const SplashScreen(), // Mulai dengan splash screen
+      home: const AuthGate(),
       debugShowCheckedModeBanner: false,
     );
   }
